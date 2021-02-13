@@ -837,6 +837,9 @@ MonoBehaviour:
   moveSpeed: 400
   topSpeed: 15
   rotationSpeed: 400
+  player: {fileID: 430471651}
+  main_Controller: {fileID: 861849168}
+  rigidBody2D: {fileID: 430471652}
 --- !u!114 &430471654
 MonoBehaviour:
   m_ObjectHideFlags: 0

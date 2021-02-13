@@ -19,7 +19,7 @@ public class Player_Shooter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && main_Controller.PlayerAlive() == true && main_Controller.GameIsPaused() == false && main_Controller.GameStarted() == true)
+        if (Input.GetButtonDown("Fire1") && main_Controller.IsPlayerAlive() == true && main_Controller.GameIsPaused() == false && main_Controller.GameStarted() == true)
         {
             Instantiate(laserPrefab, transform.position, transform.rotation);
             main_Controller.EffectsPlay(shootClip);

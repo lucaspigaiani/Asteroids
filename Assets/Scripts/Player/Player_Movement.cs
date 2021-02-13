@@ -8,58 +8,69 @@ public class Player_Movement : MonoBehaviour
     public float topSpeed;
     public float rotationSpeed;
 
-    private Main_Controller main_Controller;
-    private Rigidbody2D rb;
-    private Vector2 movement;
+    [SerializeField] private Transform player;
+    [SerializeField] private Main_Controller main_Controller;
+    [SerializeField] private Rigidbody2D rigidBody2D;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = this.GetComponent<Rigidbody2D>();
-        main_Controller = GameObject.FindGameObjectWithTag("Main_Controller").GetComponent<Main_Controller>();
-    }
+    private Vector2 movementAxisReceptor;
 
-    void Update()
-    {
-        if (main_Controller.PlayerAlive() == true)
-        {
-            movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
-        }
-        else 
-        {
-            movement.x = 0;
-            movement.y = 0;
-        }
-        
-    }
-    
+    private const string horizontalAxis = "Horizontal";
+    private const string verticalAxis = "Vertical";
+
     void FixedUpdate()
     {
-        if (main_Controller.PlayerAlive() == true)
+        LimitSpeed();
+        if (!main_Controller.IsPlayerAlive())
         {
-            if (rb.velocity.magnitude > topSpeed)
-                rb.velocity = rb.velocity.normalized * topSpeed;
-            if (Input.GetAxisRaw("Vertical") > 0)
-            {
-                rb.AddForce(transform.up * Time.deltaTime * moveSpeed * Input.GetAxis("Vertical"));
-            }
-            if (Input.GetAxisRaw("Vertical") < 0)
-            {
-                rb.AddForce(transform.up * Time.deltaTime * moveSpeed * -0.5f);
-            }
-            rb.MoveRotation(rb.rotation + movement.x * -1 * rotationSpeed * Time.deltaTime);
+            ResetAxis();
+            return;
+        }
+        ReceptMovementAxis();
+        ApplyForce();
+        ApplyRotation();
+    }   
+
+    private void LimitSpeed()
+    {
+        if (rigidBody2D.velocity.magnitude > topSpeed)
+        {
+            rigidBody2D.velocity = rigidBody2D.velocity.normalized * topSpeed;
+        }   
+    }
+
+    private void ReceptMovementAxis()
+    {
+        movementAxisReceptor.x = Input.GetAxisRaw(horizontalAxis);
+        movementAxisReceptor.y = Input.GetAxisRaw(verticalAxis);
+    }
+
+    private void ApplyForce()
+    {
+        if (Input.GetAxisRaw(verticalAxis) > 0)
+        {
+            rigidBody2D.AddForce(player.up * Time.deltaTime * moveSpeed * Input.GetAxis(verticalAxis));
+        }
+        if (Input.GetAxisRaw(verticalAxis) < 0)
+        {
+            rigidBody2D.AddForce(player.up * Time.deltaTime * moveSpeed * -0.5f);
         }
     }
 
-
-    public void ResetGame()
+    private void ApplyRotation()
     {
-        
-        this.transform.position = new Vector2(0, -4);
-        this.transform.rotation = new Quaternion(0, 0, 0, 0);
-        rb.velocity = new Vector2(0, 0);
+        rigidBody2D.MoveRotation(rigidBody2D.rotation + movementAxisReceptor.x * -1 * rotationSpeed * Time.deltaTime);
     }
 
+    private void ResetAxis()
+    {
+        movementAxisReceptor.x = 0;
+        movementAxisReceptor.y = 0;
+    }
 
+    public void ResetPlayerOrientation()
+    {        
+        player.position = new Vector2(0, -4);
+        player.rotation = new Quaternion(0, 0, 0, 0);
+        rigidBody2D.velocity = new Vector2(0, 0);
+    }
 }

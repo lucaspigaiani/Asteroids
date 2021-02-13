@@ -65,7 +65,7 @@ public class Main_Controller : MonoBehaviour
                 {
                     spawn.ResetGame();
                     player_Life_Controller.ResetGame();
-                    player_Movement.ResetGame();
+                    player_Movement.ResetPlayerOrientation();
                     points = 0;
                     pointsText.text = points.ToString();
                     gameEnded = false;
@@ -132,7 +132,7 @@ public class Main_Controller : MonoBehaviour
     {     
        return gameEnded;
     } 
-    public bool PlayerAlive() 
+    public bool IsPlayerAlive() 
     {     
        return playerAlive;
     }
